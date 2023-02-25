@@ -1,35 +1,35 @@
 ![cover](cover.png)
 
-## Introdução
+## Introduction
 
-O aplicativo *"Variação do Ativo"* apresenta os dados dos últimos 30 pregões do ativo VALE3. Os dados podem ser visualisados de duas maneiras: 
-- Tabela: exibe o valor de abertura de cada dia além da variação porcentual com relação ao dia anterior e ao primeiro dia da lista;
-- Gráfico: mostra os valores de abertura de cada pregão em um gráfico de linha. Traz também os valores de fechamento, máximo e mínimo do útimo pregão. 
+This app shows how the stock price of VALE3 has evolved over the last 30 trading days. Users can view the data in two ways:
+Table: presents the open price for each day as well as the comparison with the previous day and the first day on the list. 
+Chart: a line chart that makes it easy to view how the price has changed.
 
-## Plataformas Suportadas
+## Supported Platforms
 
-O aplicativo está disponível nas plataformas *Android* e *iOS*. As funcionalidades foram desenvolvidas em *Flutter* e, portanto, o código é compartilhado entre as duas plataformas. 
+The app is available on Android and iOS devices. The main features were developed using Dart/Flutter, which means the same code is shared between the two platforms.
 
-Existe, porém, uma tela que permite ao usuário escolher a forma de visualição dos dados. Esta tela, mostrada abaixo, foi desenvolvida de forma nativa.
+There's however a screen that allows users to choose how they want to visualise the data. This screen (shown below) was implemented natively on each platform. 
+
+The goal of this project is to show how Flutter can be integrated into existing mobile apps. 
 
 ![native screens](nativeScreens.png)
 
-#### Organização do Projeto
+#### Project Structure
 
-O projeto está dividido em três partes, conforme demonstrado a seguir:
+The project is organized in the following folders:
 
 ```
 /project/root
-└── android_stockpricechange/         <--- Aplicativo Android
-└── flutter_module_stockpricechange   <--- Módulo em Flutter (código compartilhado)
-└── ios_stockpricechange              <--- Aplicativo iOS
+└── android_stockpricechange/         <--- Android App
+└── flutter_module_stockpricechange   <--- Flutter Module (shared)
+└── ios_stockpricechange              <--- iOS App
 ```
 
-## Execução Local
+## Running the app
 
-Para executar o projeto localmente, é necessário ter o *Flutter* configurado na máquina (para *iOS*, também é necessário ter *cocoapods* ) e abrir cada um dos aplicativos na IDE correspondente. 
-
-O script abaixo exemplifica este processo.
+The following script can be used to open the Android and iOS apps on their corresponding IDEs:
 
 ```bash
   #!/bin/bash
@@ -46,37 +46,25 @@ O script abaixo exemplifica este processo.
   open stockpricechange.xcworkspace
 ```
 
-### Comunicação Flutter <> Nativo
+### Flutter <> Native Communication
 
-A comunicação entre a plataforma nativa e o Flutter foi implementada com o auxílio do [pigeon](https://pub.dev/packages/pigeon). 
+The communication between the host platform and *Flutter* was implemented using [pigeon](https://pub.dev/packages/pigeon). 
 
-Quando o usuário escolhe uma das opções na tela nativa (tabela ou gráfico), a plataforma nativa envia uma mensagem para o Flutter antes de iniciar a tela do Flutter. 
+When the user chooses one of the options on the first screen (table or chart), the host platform sends a message with the selection to Flutter before showing the Flutter module. 
 
-Já na tela Flutter, quando o usuário utiliza o botão para voltar a tela anterior, o Flutter envia uma mensagem a plataforma nativa, que é então responsável por realizar a navegação. 
-
-## Arquitetura
-
-A arquitera do módulo Flutter segue o padrão [Redux](https://pub.dev/packages/flutter_redux). Todos os dados apresentados pela UI vêm da *store* do Redux. 
-
-Existe um *middleware* (`RepositoryMiddleware`) que é responsável por fazer a comunicação assíncrona com o repositório para recuperar os dados. 
-
-O padrão de projeto *Repository*(`TradingDaysRepository`) foi utilizado para abstrair da aplicação a fonte dos dados. Com ele, seria possível substituir a API utilizada sem afetar o resto da aplicação. Também seria possível utilizar um *cache* em disco ou memória, também sem impactar a aplicação. 
-
-Por fim, a comunicação com a API do Yahoo Finance foi feita utilizando o [Dio](https://pub.dev/packages/dio) e está implementada em um *package* separado (`packages/yahoo_finance_api`) que poderia, por exemplo, ser compartilhado com outros projetos. 
+Later, when the user presses back to return to the first screen, Flutter sends a message to the host platform, which in turn takes care of navigation.
 
 ## Design System
 
-A UI do applicativo utiliza o conceito de design system, que foi implementado em um *package* separado, chamado `sp_design_system` (assim como a consumo da API, este poderia ser compartilhado com outros projetos).
-
-Um dos benefícios deste design system é o suporte ao dark mode, como visto abaixo, que é conseguido pelo uso consistente da classe `SpColors`.
+The app uses a dedicated module for the design system. Some advantages of using this pattern are the consistency across the entire app, as well as the easy implementation of dark mode. 
 
 ![light and dark modes](lightDarkModes.png)
 
-## Testes Automatizados
+## Testing
 
-Existem dois exemplos de testes automatizados no projeto: testes unitário para o *reducer*, checam as regras de negócio do aplicativo; testes de widget para o `StockInfo` demonstra como verificar que a UI do *Flutter* apresenta os dados desejados. 
+There are two sample automated tests in the project: unit tests for the *reducer* verifies the business rules; widget tests for `StockInfo` show how to check that the UI presents the desired information. 
 
-Idealmente, o projeto teria muitos mais testes destes tipos, além de alguns testes de integração. Por restrição de tempo, não foram implementados mais testes, porém estes servem de exemplo da direção que o projeto deveria tomar.
+Ideally, there would be many more of these tests, but they serve to show how this project could evolve. 
 
 ## Demo
 
